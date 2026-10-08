@@ -1,0 +1,23 @@
+{
+  "name": "cigram-together-api",
+  "main": "worker.js",
+  "compatibility_date": "2026-10-06",
+
+  // Service binding → خدمة الحسابات (نفس الاسم الذي اشتُق من cigram-auth-api.<account>.workers.dev).
+  // fetch() عادي بين Workers على نفس الحساب عبر workers.dev يُرفض (خطأ 1042) لذلك نستخدم الـ binding.
+  "services": [
+    { "binding": "AUTH_API", "service": "cigram-auth-api" }
+  ],
+
+  "durable_objects": {
+    "bindings": [
+      { "name": "DIRECTORY", "class_name": "TogetherDirectory" },
+      { "name": "ROOM", "class_name": "TogetherRoom" }
+    ]
+  },
+
+  // أول نشر: تسجيل الأصناف كـ SQLite-backed Durable Objects
+  "migrations": [
+    { "tag": "v1", "new_sqlite_classes": ["TogetherDirectory", "TogetherRoom"] }
+  ]
+}
